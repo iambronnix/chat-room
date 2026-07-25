@@ -1,8 +1,18 @@
- var(
+package errors_test
+import(
+	"net"
+	"time"
+	"log"
+	"errors"
+)
+var(
  err error
  n int
  i = 7 //maximum number of retries
  )
+ func Test()error{
+var conn net.Conn
+ 
  for; i > 0 ; i--{
   n, err = conn.Write([]byte("hello world"))
   		if err != nil{
@@ -19,3 +29,4 @@
  return errors.New("temporary write failure threshhold exceeded")
  }
  log.Printf("wrote %d bytes to %s\n", n, conn.RemoteAddr())
+ }
