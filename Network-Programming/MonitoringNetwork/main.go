@@ -34,14 +34,14 @@ func ExampleMOnitor(){
 			defer conn.Close()
 
 			b := make([]byte, 1024)
-			r := io.TeeReader(conn, monitor)
+			r := io.TeeReader(conn, monitor)//writes into monitor and returns an io.reader
 
 			n, err := r.Read(b)
 			if err != nil && err != io.EOF{
 				monitor.Println(err)
 				return
 			}
-			w := io.MultiWriter(conn, monitor)
+			w := io.MultiWriter(conn, monitor)//duplicates its writes 
 
 			_, err = w.Write(b[:n])//echo message
 			if err != nil && err != io.EOF{
@@ -51,5 +51,21 @@ func ExampleMOnitor(){
 
 	}()
 
+		conn, err := net.Dial("tcp",listener.Addr().String())//dialer to the server
+		if err != nil{
+			monitor.Fatal(err)
+		}
+		_, err = conn.Write([]byte("iamerick\n"))
+		if err != nil{
+			monitor.Fatal(err)
+		}
+		_ = conn.Close()
+		<- done		
+
 		
 }		
+
+func main(){
+	ExampleMOnitor()
+	
+}
