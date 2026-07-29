@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"time"
 )
 
@@ -30,7 +28,7 @@ func ping (ctx context.Context, w io.Writer, reset <-chan time.Duration){
 		}()
 
 		for {
-			input := bufio.NewScanner(os.Stdin)
+			
 			select{
 				case <- ctx.Done():
 				     return
@@ -41,14 +39,10 @@ func ping (ctx context.Context, w io.Writer, reset <-chan time.Duration){
 				if newInterval > 0 {
 					interval = newInterval
 				}
-				case <- timer.C:
-				for input.Scan(){
-				 _,err := w.Write(input.Bytes())
-				 if err != nil{
-						panic(err)
+				case <- timer.C:				
+				 if _,err := w.Write([]byte("iamerick"));err != nil{
+						return
 				//track and act on consecutive timeouts here
-				}
-				return
 				}
 			}
 			_ = timer.Reset(interval)
@@ -81,7 +75,10 @@ func pinger(){
 
          fmt.Printf("received %q (%s)\n", buf[:n], time.Since(now).Round(100*time.Millisecond))
     }
-    receivePing(time.Second,r)
+    for i, v := range []int64{0,200,300,0,-1,-1,-1}{
+         fmt.Printf("Run %d:\n", i+1)
+         receivePing(time.Duration(v)*time.Millisecond,r)
+    }
 
     cancel()
     <-done //ensures the pinger exits after cancelling the context
