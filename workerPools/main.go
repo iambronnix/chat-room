@@ -24,7 +24,7 @@ func main(){
 		go worker(w, jobs, results)
 	}
 	//send 9 jobs then close the channel to indicate that's ll the work
-	for j := 1; j <= 9; j++{
+	for j := 0; j <= 9; j++{
 	jobs <- j
 	}
 	close(jobs)
